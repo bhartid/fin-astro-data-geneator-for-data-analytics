@@ -1,0 +1,18 @@
+# Open Questions and Conflicts Register
+
+This register is intentionally explicit so a new AI does not mistake unknowns for decisions.
+
+| ID | Topic | What is unknown / conflicting | Why it matters | Required next action | Owner input required now? |
+|---|---|---|---|---|---|
+| Q-001 | Inventory completeness | Existing Western and Vedic catalogues are working inventories, not independently verified exhaustive catalogues. | Foundation must support the intended full scope. | Audit against source traditions and research use cases; record additions and exclusions with evidence. | No, research first |
+| Q-002 | Feature ID gaps | Some IDs are absent in the source catalogue. | Gaps must not be mistaken for missing features or silently filled. | Preserve current IDs; audit feature semantics; issue new IDs only for approved additions. | No |
+| Q-003 | Astrology schools | Several feature definitions vary by school, lineage or region. | Reproducibility requires explicit rule variants. | Catalogue variants and sources feature by feature. | Only where no default is justified |
+| Q-004 | Binding choice | `pyswisseph` and `pysweph` are both named in source material; compatibility and maintenance claims need current verification. | Determines adapter implementation and exposed API. | Verify current packages, docs, versions, licenses and platform support. | Later |
+| Q-005 | Licensing | Swiss Ephemeris and binding license implications have not been resolved for all deployment/distribution scenarios. | May affect architecture and distribution. | Review current official license terms against intended use. | Later, after options documented |
+| Q-006 | Calculation compatibility | The source project contains a parameter compatibility matrix, but every row and flag combination needs validation against official API behaviour. | Invalid combinations must be rejected and valid combinations must not be lost. | Audit `project.md` Section C against current official docs. | No |
+| Q-007 | Observer/location model | Different features need different location precision and timezone semantics. | Avoid unnecessary location requirements and incorrect local-time boundaries. | Define location requirement per feature and event type. | No |
+| Q-008 | External calendars | Festival and exchange-observance data may require external sources and regional rules. | Cannot assume ephemeris alone determines them. | Identify data providers and distinguish calculated vs sourced events. | Later |
+| Q-009 | Gann scope | Candidate Gann methods and their precise algorithms/source provenance are not yet specified. | Must preserve extensibility without conflating them with astrology. | Build separate method catalogue and dependency map after core inventory audit. | No |
+| Q-010 | Fixed stars / asteroids / hypothetical bodies | Scope and data-file coverage vary by body and source catalogue. | Affects ephemeris file requirements, licensing and runtime capability. | Audit every body family and map to API/data requirements. | No |
+| Q-011 | Birth/inception chart use | Existing catalogue includes chart-relative techniques, although the primary use is time-series research. | Requires storing/reusing reference chart calculations. | Keep in inventory and identify optional dependency; do not assume natal product scope. | No |
+| Q-012 | Financial-market alignment | Candle timestamp convention, exchange timezone/calendar, and interval-boundary semantics need a formal contract. | Same astronomical event can map to different bars depending on convention. | Define in a later market-time alignment specification. | Later |
