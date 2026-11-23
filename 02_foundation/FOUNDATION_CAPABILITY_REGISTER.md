@@ -141,7 +141,7 @@ Constraint: D-015 (no caching) applies.
 | ID | Capability | Class | Notes |
 |---|---|---|---|
 | F-I01 | Calculation profile separate from feature request | PLUMBING | |
-| F-I02 | Request validation, compatibility rules, policy for irrelevant settings | PLUMBING | The library silently drops or zeroes many invalid combinations; project-side validation is mandatory (report section 5) |
+| F-I02 | Request validation, compatibility rules, policy for irrelevant settings | PLUMBING | The library silently drops or zeroes many invalid combinations; project-side validation is mandatory. Rules R-001 to R-052 are in `CONFIGURATION_COMPATIBILITY_MATRIX.md` |
 | F-I03 | Isolation of library global state: ephemeris path, sidereal mode, topocentric position | PLUMBING | DOC for global setters. CONFIRMED by P-10: sidereal mode is per-thread (a worker thread silently used Fagan/Bradley). Library is not thread-safe per binding authors (COMM). Policy: set sidereal mode and topocentric position in the calling thread before every request; default single-threaded |
 | F-I04 | Result provenance metadata | PLUMBING | Schema deferred |
 | F-I05 | Error and warning model | PLUMBING | pyswisseph raises `swisseph.Error` on fatal errors and does not return the warning string, so fallback to Moshier must be detected from the returned flags. Confirmed by P-08: requesting Swiss without files returned Moshier flags and a 2-item result (no warning string); P-06 and P-09 show errors raised as exceptions. Rise/set uses return codes; crossings use a time earlier than the start |
