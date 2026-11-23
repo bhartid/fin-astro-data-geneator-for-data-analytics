@@ -1,6 +1,6 @@
-# Foundation Capability Register (v1.0)
+# Foundation Capability Register (v1.1)
 
-**Status:** Reviewed and documentation-verified. Runtime probes pending (see `verification/verify_swisseph_probe.py`). Not an architecture freeze. Replaces draft v0.1.
+**Status:** v1.1. Documentation-verified and runtime-probed on 2026-11-23 (Windows, Python 3.12.10, pyswisseph 2.10.3.2, Swiss Ephemeris 2.10.03; results in the verification report section 6A). Remaining `TEST` items are in section 9. Not an architecture freeze.
 **Binding:** `pyswisseph` only (decision D-018). Evidence and findings: `SWISS_EPHEMERIS_VERIFICATION_REPORT.md`.
 **Scope:** the raw, tradition-neutral foundation used by Western, Vedic, financial-astrology and Gann modules.
 
@@ -40,7 +40,7 @@
 | F-A03 | Calendar selection | PLUMBING | `GREG_CAL`, `JUL_CAL` | SRC |
 | F-A04 | Sidereal time (Greenwich and local, ARMC) | DIRECT | `sidtime` | TOC |
 | F-A05 | Equation of time | DIRECT | `time_equ` | TOC |
-| F-A06 | Ayanamsha value | DIRECT | `set_sid_mode`, `get_ayanamsa_ex_ut` | DOC. If no mode is set the default is Fagan/Bradley |
+| F-A06 | Ayanamsha value | DIRECT | `set_sid_mode`, `get_ayanamsa_ex_ut` | DOC + P-02 (confirmed: 25.08 degree offset in 2024). If no mode is set the default is Fagan/Bradley |
 | F-A07 | Ephemeris source selection, data path, coverage diagnostics | PLUMBING | `set_ephe_path`, flags | DOC. `set_ephe_path` first; env `SE_EPHE_PATH` overrides; 256-byte limit; Swiss falls back to Moshier when files are missing |
 | F-A08 | Local mean and apparent solar time | DIRECT | `time_equ`, `lmt_to_lat`, `lat_to_lmt` | TOC |
 | F-A09 | Sampling-grid generator for interval and range | PLUMBING | n/a | DESIGN. Bar convention deferred to IA-012 |
@@ -70,9 +70,9 @@
 
 | ID | Capability | Class | Candidate pyswisseph name | Verification and notes |
 |---|---|---|---|---|
-| F-C01 | Origin: geocentric (default), topocentric, heliocentric, barycentric | DIRECT | flags | DOC. Heliocentric: all planets including Moon; Sun, nodes, apogees return zeros with no error. Barycentric "not completely implemented": Swiss/JPL only, physical bodies only, zeros for nodes and apogees |
-| F-C02 | Topocentric observer setup (lon, lat, altitude m) | DIRECT | `set_topo` | DOC. Topocentric flag is dropped if combined with heliocentric or barycentric |
-| F-C03 | Zodiac: tropical or sidereal; ayanamsha ID or user-defined (reference epoch, initial value); user epoch in UT option; ecliptic-of-t0 and solar-system-plane projection options | DIRECT | `FLG_SIDEREAL`, `set_sid_mode` | DOC. No silent default allowed in this project (Fagan/Bradley is the library default) |
+| F-C01 | Origin: geocentric (default), topocentric, heliocentric, barycentric | DIRECT | flags | DOC + P-05. Heliocentric: all planets including Moon (confirmed, Moon returned 1.019 AU); Sun, nodes, apogees return zeros with no error (confirmed). Barycentric under Moshier raises an error (P-06). Official text: barycentric "not completely implemented": Swiss/JPL only, physical bodies only, zeros for nodes and apogees |
+| F-C02 | Topocentric observer setup (lon, lat, altitude m) | DIRECT | `set_topo` | DOC + P-03c. Documentation suggested the topocentric flag is dropped when combined with heliocentric; the probe shows the opposite: the HELIOCENTRIC flag is silently dropped and a topocentric geocentric position is returned. Project must reject the combination. Barycentric combination: TEST |
+| F-C03 | Zodiac: tropical or sidereal; ayanamsha ID or user-defined (reference epoch, initial value); user epoch in UT option; ecliptic-of-t0 and solar-system-plane projection options | DIRECT | `FLG_SIDEREAL`, `set_sid_mode` | DOC + P-12 (47 predefined modes, 0 to 46, confirmed by name; 255 is user-defined). No silent default allowed in this project (Fagan/Bradley is the library default) |
 | F-C04 | Tropical-to-sidereal transform as a separate operation | DERIVED_FOUNDATION | from F-A06 | Valid only for the traditional (subtraction) method. Projection modes need the library flag. Q-F1 |
 | F-C05 | Coordinate transforms (ecliptic and equatorial, with speed) | DIRECT | `cotrans`, `cotrans_sp` | TOC |
 | F-C06 | Angle normalisation, signed and unsigned difference, wrap-around | DERIVED_FOUNDATION | n/a | DESIGN. Library helpers exist (`degnorm`, `difdeg2n`) |
@@ -83,16 +83,16 @@
 | ID | Capability | Class | Candidate pyswisseph name | Verification and notes |
 |---|---|---|---|---|
 | F-D01 | Observer model: lat, lon, altitude, datum/source; timezone kept separate | PLUMBING | n/a | DOC. East longitude and north latitude are positive. Geographic vs geocentric latitude is a documented distinction |
-| F-D02 | Horizontal coordinates, refraction | DIRECT | `azalt`, `azalt_rev`, `refrac` | DOC. **Azimuth is measured from the south point towards the west**, not from north |
-| F-D03 | Rise, set, upper/lower meridian transit, civil/nautical/astronomical twilight | DIRECT | `rise_trans` | DOC. Returns the next event after the start time. Code `-2` means circumpolar (no event) |
+| F-D02 | Horizontal coordinates, refraction | DIRECT | `azalt`, `azalt_rev`, `refrac` | DOC + P-14 (confirmed: Sun due south at noon returned 359.06). **Azimuth is measured from the south point towards the west**, not from north |
+| F-D03 | Rise, set, upper/lower meridian transit, civil/nautical/astronomical twilight | DIRECT | `rise_trans` | DOC + P-13. Returns the next event after the start time. Code `-2` means circumpolar (confirmed; times returned as zeros) |
 | F-D04 | Day/night interval between consecutive rise and set events | DERIVED_FOUNDATION | from F-D03 | DESIGN. Sunrise-anchored day rules belong to tradition |
-| F-D05 | Rise/set convention profiles: astronomical (upper limb, refraction on) vs Hindu (disc centre, no refraction, geocentric, no ecliptic latitude); disc-bottom; fixed disc size; local horizon height | DIRECT | `BIT_*` flags, `rise_trans_true_hor` | DOC. NEW. A dedicated Hindu flag exists. Critical for Vara and all sunrise-based features |
+| F-D05 | Rise/set convention profiles: astronomical (upper limb, refraction on) vs Hindu (disc centre, no refraction, geocentric, no ecliptic latitude); disc-bottom; fixed disc size; local horizon height | DIRECT | `BIT_*` flags, `rise_trans_true_hor` | DOC + P-13. NEW. A dedicated Hindu flag exists. At Mumbai on 2024-06-21 the Hindu sunrise was about 3.8 minutes later than the astronomical sunrise, so the convention must be an explicit setting. Critical for Vara and all sunrise-based features |
 
 ### E. Houses and angles
 
 | ID | Capability | Class | Candidate pyswisseph name | Verification and notes |
 |---|---|---|---|---|
-| F-E01 | House cusps and angles for a chosen system, tropical or sidereal | DIRECT | `houses_ex` | DOC + SRC. 12 cusps (36 for Gauquelin). Angles: Asc, MC, ARMC, Vertex, equatorial ascendant, two co-ascendants, polar ascendant; Sun declination returned for Sunshine systems. Placidus, Koch and Gauquelin fail beyond the polar circle (Porphyry returned plus error); Sunshine can also fail |
+| F-E01 | House cusps and angles for a chosen system, tropical or sidereal | DIRECT | `houses_ex` | DOC + SRC. 12 cusps (36 for Gauquelin). Angles: Asc, MC, ARMC, Vertex, equatorial ascendant, two co-ascendants, polar ascendant; `houses_ex` returns 12 cusps and 8 angles (P-09, P-15e); the Sun declination of the C array is not exposed there (TEST `houses_ex2`). Placidus, Koch and Gauquelin fail at 80 degrees latitude: the binding raises an error and returns no fallback cusps (P-09). Porphyry and Whole Sign work. Sunshine can also fail |
 | F-E02 | House position of a body (number with fraction) | DIRECT | `house_pos` | TOC |
 | F-E03 | Gauquelin sectors | DIRECT | `gauquelin_sector`, `house_pos` | TOC + COMM. Methods 0 to 5 exist |
 | F-E04 | Whole-sign and equal-house variants | DIRECT | letters `W`, `N`, `A`, `E`, `D`, `V` | COMM for letters. Which are computed by the library vs derivable: TEST |
@@ -129,7 +129,7 @@
 | F-H02 | Circular quantity support (wrap at 360, targets at any multiple) | EVENT_SEARCH | Uses F-C06 |
 | F-H03 | Extremum finder (stations, greatest elongation, declination extremes, apsides) | EVENT_SEARCH | |
 | F-H04 | Interval builder: boolean state over time to start/end intervals | EVENT_SEARCH | |
-| F-H05 | Native crossings: Sun, Moon, Moon through ecliptic (true node), heliocentric planets | DIRECT | `solcross_ut`, `mooncross_ut`, `mooncross_node_ut`, `helio_cross_ut`. DOC. Sun/Moon forward-only; error is signalled by a returned time earlier than the start; precision 1 milliarcsecond; documented flags exclude sidereal (TEST) |
+| F-H05 | Native crossings: Sun, Moon, Moon through ecliptic (true node), heliocentric planets | DIRECT | `solcross_ut`, `mooncross_ut`, `mooncross_node_ut`, `helio_cross_ut`. DOC. Sun/Moon forward-only; error is signalled by a returned time earlier than the start; precision 1 milliarcsecond; documented flags exclude sidereal, but P-11 shows the sidereal flag works (Sun sidereal longitude 359.99999999992 at the returned time, with `set_sid_mode` called first). `helio_cross_ut` returns one JD; `mooncross_node_ut` returns (JD, longitude, latitude) (P-15) |
 | F-H06 | Multi-body relative functions (difference, sum, midpoint) as search inputs | DERIVED_FOUNDATION | |
 | F-H07 | Search behaviours: repeated crossings, retrograde loops, tangent contacts, no-event windows, step-size safety | EVENT_SEARCH | |
 | F-H08 | Event result contract: UTC time, bracket, tolerance, direction, classification, diagnostics | PLUMBING | Field names deferred |
@@ -142,9 +142,9 @@ Constraint: D-015 (no caching) applies.
 |---|---|---|---|
 | F-I01 | Calculation profile separate from feature request | PLUMBING | |
 | F-I02 | Request validation, compatibility rules, policy for irrelevant settings | PLUMBING | The library silently drops or zeroes many invalid combinations; project-side validation is mandatory (report section 5) |
-| F-I03 | Isolation of library global state: ephemeris path, sidereal mode, topocentric position | PLUMBING | DOC for global setters. Community report says sidereal mode is per-thread in the binding (TEST). Library is not thread-safe per binding authors (COMM). Default policy: single-threaded, set state before every request |
+| F-I03 | Isolation of library global state: ephemeris path, sidereal mode, topocentric position | PLUMBING | DOC for global setters. CONFIRMED by P-10: sidereal mode is per-thread (a worker thread silently used Fagan/Bradley). Library is not thread-safe per binding authors (COMM). Policy: set sidereal mode and topocentric position in the calling thread before every request; default single-threaded |
 | F-I04 | Result provenance metadata | PLUMBING | Schema deferred |
-| F-I05 | Error and warning model | PLUMBING | pyswisseph raises `swisseph.Error` on fatal errors and does not return the warning string, so fallback to Moshier must be detected from the returned flags. Rise/set uses return codes; crossings use a time earlier than the start |
+| F-I05 | Error and warning model | PLUMBING | pyswisseph raises `swisseph.Error` on fatal errors and does not return the warning string, so fallback to Moshier must be detected from the returned flags. Confirmed by P-08: requesting Swiss without files returned Moshier flags and a 2-item result (no warning string); P-06 and P-09 show errors raised as exceptions. Rise/set uses return codes; crossings use a time earlier than the start |
 | F-I06 | Direct vs derived tagging on every output | PLUMBING | `project.md` primary goal |
 | F-I07 | Version capture: library, binding, data-file coverage | PLUMBING | `version`, `get_current_file_data` DOC |
 | F-I08 | Data-file manifest per capability and time range | PLUMBING | NEW. Planet, moon, asteroid files in 600-year blocks; star, orbital-element, asteroid-name, delta-T and leap-second text files; `ast*` and `sat` folders |
@@ -166,7 +166,7 @@ Constraint: D-015 (no caching) applies.
 | 1.11 Crossing searches | F-H05 |
 | Layer 5 | F-H01 to F-H08 |
 
-**Correction to the dependency document:** it says Sankranti (Sun crossing a sidereal longitude) is returned directly by the library. The official crossing documentation lists no sidereal flag. Treat Sankranti as `EVENT_SEARCH` on a sidereal longitude unless probe P-11 shows the native function handles it.
+**Note on the dependency document:** it says Sankranti (Sun crossing a sidereal longitude) is returned directly by the library. The official crossing documentation lists no sidereal flag, so v1.0 of this register doubted that. Probe P-11 shows the original claim is correct: `solcross_ut` with the sidereal flag returned the Mesha crossing of 2024-04-13 at about 15:34 UT. Sankranti is therefore `DIRECT` (set the sidereal mode first, in the calling thread).
 
 ## 5. Western needs checklist
 
@@ -190,7 +190,15 @@ Present in the foundation for Western even though Vedic does not need them: heli
 
 ## 8. Next steps
 
-1. Owner runs the probe script and returns its output.
-2. Update `TEST` rows with results.
-3. Expand each `F-` capability with `FEATURE_SPECIFICATION_TEMPLATE.md`.
-4. Map each Vedic feature (V-*) to F- capabilities; record gaps as new F- IDs.
+1. DONE 2026-11-23: probes run and `TEST` rows updated.
+2. Expand each `F-` capability with `FEATURE_SPECIFICATION_TEMPLATE.md`.
+3. Map each Vedic feature (V-*) to F- capabilities; record gaps as new F- IDs.
+
+## 9. Remaining TEST items after the 2026-11-23 probes
+
+- Default topocentric state when `set_topo` was never called (the probe had already set it earlier in the process). Policy stands: always call `set_topo` before every topocentric request.
+- Topocentric combined with barycentric; barycentric with Swiss or JPL data files.
+- House-letter table from the official documentation (Q-020), equal-house letters (F-E04), `houses_ex2`.
+- Functions with data files: fixed stars (P-15d failed only for lack of `sefstars.txt`), asteroids, planetary moons.
+- Eclipse, occultation and heliacal functions: existence confirmed, calls not exercised.
+- Python constant names for all ayanamsha modes in `project.md` B.5.

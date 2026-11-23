@@ -24,8 +24,8 @@ This file contains decisions explicitly established by owner instructions or con
 | D-018 | The Python binding is `pyswisseph` only. | OWNER CONFIRMED 2026-11-12 | Owner statement. See Q-013 for Python-version consequence |
 | D-019 | The AI performs Swiss Ephemeris verification and review. Documentation verification is done (`SWISS_EPHEMERIS_VERIFICATION_REPORT.md`); runtime probes are pending. This replaces the earlier plan to verify last. | OWNER CONFIRMED 2026-11-12 | Owner request in conversation |
 | D-020 | The generic event-search primitive (function of time, threshold, window, tolerance; returns crossings) is part of the foundation. Tradition modules supply conditions, orbs and naming. | OWNER CONFIRMED 2026-11-12 | Owner agreed with the recommendation |
-| D-021 | Target Python version is 3.11 (prebuilt pyswisseph wheels, no compiler needed). Resolves Q-013. | OWNER CONFIRMED 2026-11-12 | Owner statement in conversation |
-| D-022 | Heliocentric Moon and heliocentric sidereal calculations are allowed as valid experimental combinations, flagged experimental. Overrides the invalid marking in `project.md` B.12 rows 11 and 14. Resolves Q-017. Other rules stay: Sun, nodes and apogees are rejected in heliocentric and barycentric frames; observer location is rejected with those frames. | OWNER CONFIRMED 2026-11-12 | Owner accepted AI recommendation |
+| D-021 | Target Python version is 3.11 (prebuilt pyswisseph wheels, no compiler needed). Resolves Q-013. | OWNER CONFIRMED 2026-11-23; UNDER REVIEW (see Q-013, probe ran on 3.12.10) | Owner statement in conversation |
+| D-022 | Heliocentric Moon and heliocentric sidereal calculations are allowed as valid experimental combinations, flagged experimental. Overrides the invalid marking in `project.md` B.12 rows 11 and 14. Resolves Q-017. Other rules stay: Sun, nodes and apogees are rejected in heliocentric and barycentric frames; observer location is rejected with those frames. | OWNER CONFIRMED 2026-11-23 | Owner accepted AI recommendation |
 
 ## Provisional items (not final decisions)
 
