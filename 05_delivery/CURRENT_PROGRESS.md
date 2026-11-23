@@ -1,46 +1,38 @@
 # Current Progress and Handoff
 
-**Knowledge-base version:** 0.1.0  
-**Current stage:** Organise source material and audit the complete inventory.  
+**Knowledge-base version:** 0.2.0
+**Date:** 2026-11-12
+**Current stage:** Foundation (raw, tradition-neutral) finalisation, then Vedic audit, then Western audit, then code (D-016, D-017).
 **Overall status:** IN PROGRESS. No architecture or implementation approval.
 
-## Completed in this session
+## Completed
 
-- Established a project index and mandatory AI start-up protocol.
-- Preserved the three supplied source documents under `99_source_documents/`.
-- Split the existing Western and Vedic catalogue into separate working inventory files while preserving the source feature IDs and descriptions.
-- Preserved source exclusions in a separate boundary document.
-- Added an inventory method, lifecycle statuses and completeness checklist.
-- Added preliminary shared-astronomy foundation requirements.
-- Added input/flag taxonomy and time/location/coordinate semantics.
-- Added dependency-layer guide and shared-versus-tradition-specific explanation.
-- Added feature specification template and tradition family registers.
-- Added separate Gann/financial research extension placeholder.
-- Added architecture and implementation gates.
+- Project index, governance, inventories, dependency model and source archive (v0.1.0).
+- Owner decisions D-016 to D-022 recorded (D-021 Python 3.11, D-022 experimental heliocentric Moon and heliocentric sidereal allowed).
+- `02_foundation/FOUNDATION_CAPABILITY_REGISTER.md` v1.0: capabilities F-A to F-I, each with class and verification label; traceability to dependency layer 1; Western checklist; open questions.
+- `02_foundation/SWISS_EPHEMERIS_VERIFICATION_REPORT.md`: binding status, licence, confirmed library behaviours, audit of `project.md`, validation rules the project must own.
+- `02_foundation/verification/verify_swisseph_probe.py`: throwaway probe script for runtime checks (not library code).
 
 ## Not completed / not claimed
 
-- The feature inventories have NOT been independently audited for completeness.
-- Swiss Ephemeris function/flag claims have NOT been verified against current official documentation.
-- The source compatibility matrix has NOT been technically approved.
-- Astrology definitions, school variants and Marathi terminology have NOT been fully researched.
-- Gann methods have NOT been inventoried.
-- No MVP has been frozen.
-- No foundation architecture has been frozen.
-- No code has been implemented.
+- Runtime probes P-01 to P-15 have NOT been run. Rows labelled `TEST` in the register stay unconfirmed until they are.
+- Official documentation after the refraction section (heliacal, date/time, topocentric setter, sidereal mode detail, houses, house position, sidereal time) was not read in full; those rows are labelled `TOC` or `SRC`.
+- Official ayanamsha constant list and house-letter table not retrieved (Q-020).
+- Western and Vedic inventories not audited. No ID register yet. No MVP. No architecture. No code.
+- Inventory audit register: IA-011 should now read "PARTIALLY DONE: documentation verified, runtime probes pending". IA-004 and IA-010 have started through the foundation register.
+
+## Owner actions pending
+
+1. Run the probe script on Python 3.11 and return `probe_results.json`.
+2. No other owner decisions pending.
 
 ## Next exact task
 
-Perform a structured audit of the source documents, starting with `project.md` and the Western/Vedic feature catalogue:
-
-1. Verify that every source catalogue row is present in the split files.
-2. Build a machine-readable/Markdown ID register with each ID, family, canonical label and source location.
-3. Review each family for semantic gaps, duplicates and combined entries.
-4. Research additions and variants with citations; label them as candidates until approved.
-5. Map each feature to raw astronomy, settings, location, reference data, chart context and event-search dependencies.
-6. Update `INVENTORY_AUDIT_REGISTER.md` and `OPEN_QUESTIONS_AND_CONFLICTS.md`.
-7. Do not freeze the foundation until all inventory and dependency audit work packages are complete.
+1. Update `TEST` rows in the register from probe results; rewrite the `project.md` Section C matrix as a corrected compatibility document.
+2. Expand each F- capability with `FEATURE_SPECIFICATION_TEMPLATE.md`, in this order: time (F-A), positions and frames (F-B, F-C), observer and sunrise (F-D), houses (F-E), event search (F-H), state and metadata (F-I), then the rest.
+3. Build the Vedic ID register (all V-* and V-E* IDs) and begin the Vedic audit family by family, mapping each feature to F- capabilities and recording gaps as new F- IDs.
+4. Ask the owner only for genuine decisions. Research first.
 
 ## Instructions to the next AI
 
-Read `00_governance/00_PROJECT_INDEX.md` and all mandatory governance files first. Treat source catalogues as working material, not verified truth. Do not ask the owner to restate project intent. Research and proceed autonomously where possible. Ask only for genuine owner decisions. Preserve IDs and update this progress file at the end of the session.
+Read `00_governance/00_PROJECT_INDEX.md` and all mandatory governance files first. Treat source catalogues as working material. Do not ask the owner to restate project intent. The owner has no astrology background: do the research, cite sources, and present choices in plain terms. Preserve IDs. Update this file at the end of the session.
